@@ -1,0 +1,6 @@
+SELECT
+	date,
+	MAX(sum_payment),
+	client_id
+FROM Payments
+GROUP BY date

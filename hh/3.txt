@@ -1,0 +1,7 @@
+SELECT 	
+	Payments.client_id,
+	Payments.payment_id,
+	Payments.date,
+	coalesce(lag(Payments.date) over (PARTITION BY Payments.client_id order by Payments.client_id), '01.01.1990') as previuous_payment_day /*как заименовать столбеч?*/
+	
+FROM Payments

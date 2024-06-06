@@ -1,0 +1,86 @@
+В таблице sql_test_personell содержится список сотрудников компании.*
+Таблица содержит следующие поля:
+	pers_id уникальный номер сотрудника,
+	department_id уникальный номер подразделения, в котором работает сотрудник
+	chief_id id руководителя для данного сотрудника
+	pers_name ФИО сотрудника,
+	pers_salary number оклад сотрудика в месяц, тыс. руб.
+	pers_bd date дата рождения сотрудника
+	gender пол сотрудника
+
+В таблице sql_test_department содержится список отделов компании
+Таблица содержит следующие поля:
+	department_id идентификатор подразделения,
+	department_name уникальный номер подразделения,
+	department_head идентификатор сотрудника - главы отдела
+
+Задача 1:
+Вывести ФИО всех сотрудников женского пола.
+
+Решение:
+select pers_name
+from sql_test_personell
+where gender = 'ж'
+
+Задача 2: 
+Вывести ФИО и дату рождения всех сотрудников, которые родились весной.
+
+Решение:
+select pers_name, pers_bd
+from sql_test_personell
+where month(pers_bd) > 2 and month(pers_bd) < 6
+
+Задача 3:
+Вывести ФИО всех сотрудников из отдела продаж.
+
+Решение:
+select pers_name
+from sql_test_personell
+left join sql_test_department
+ on sql_test_personell.department_id = sql_test_department.department_id
+where sql_test_department.department_name = 'отдел продаж'
+
+Задача 4:
+Вывести Названия отделов, в которых кол-во сотрудников не превышает 3.
+
+Решение:
+select sql_test_department.department_name
+from sql_test_personell
+left join sql_test_department
+ on sql_test_personell.department_id = sql_test_department.department_id
+group by sql_test_department.department_name
+having count(sql_test_personell.department_id) < 4 
+
+Задача 5:
+Вывести ФИО всех сотрудников, которые получают з/п выше средней по компании.
+
+Решение:
+select pers_name
+from sql_test_personell
+where pers_salary > (select avg(pers_salary) from sql_test_personell
+
+Задача 6:
+Вывести ФИО всех сотрудников, которые получают зп выше средней по своему отделу.
+
+Решение:
+select
+ sql_test_personell.pers_name,
+ sql_test_personell.pers_salary,
+ avg(sql_test_personell.pers_salary) over(partition by sql_test_department.department_name) as avg_department_salary
+from sql_test_personell
+left join sql_test_department
+ on sql_test_personell.department_id = sql_test_department.department_id
+where sql_test_personell.pers_salary > avg_department_salary
+
+Задача 7:
+Вывести ФИО начальников отделов, по убыванию отделов от самой высокой средней з/п к наименьшей.
+
+Решение:
+select
+ sql_test_personell.pers_name,
+ avg(sql_test_personell.pers_salary) over(partition by sql_test_personell.department_id) as avg_department_salary
+from sql_test_personell
+left join sql_test_department
+ on sql_test_personell.department_id = sql_test_department.department_id
+where sql_test_personell.chief_id = sql_test_department.department_head
+order by avg_department_salary desc

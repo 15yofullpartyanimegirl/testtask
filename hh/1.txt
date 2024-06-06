@@ -1,0 +1,11 @@
+SELECT 
+	Clients.client_id,
+	Clients.client_name,
+	count(Payments.payment_id) as 'count',
+	sum(Payments.sum_payment) as 'sum'
+FROM Clients
+JOIN Payments ON Clients.client_id = Payments.client_id
+WHERE Payments.date >= '2024-04-01 00:00:00' AND Payments.date < '2024-05-01 00:00:00' 
+GROUP BY Clients.client_id
+HAVING count(Clients.client_id) > 10
+ORDER BY SUM(Payments.sum_payment) DESC

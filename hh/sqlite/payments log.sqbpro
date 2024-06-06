@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/User/Downloads/hh test task/payments log.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1182"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,7:mainClients"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Clients" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="62"/><column index="2" value="186"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Payments" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort><column index="2" mode="0"/></sort><column_widths><column index="1" value="174"/><column index="2" value="134"/><column index="3" value="147"/><column index="4" value="99"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats><column index="1" value=""/></display_formats><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="payments" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="40"/><column index="2" value="62"/><column index="3" value="84"/><column index="4" value="99"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">SELECT 
+	Clients.client_id,
+	Clients.client_name,
+	count(Payments.payment_id) as 'count',
+	sum(Payments.sum_payment) as 'sum'
+FROM Clients
+JOIN Payments ON Clients.client_id = Payments.client_id
+WHERE Payments.date &gt;= '2024-04-01 00:00:00' AND Payments.date &lt; '2024-05-01 00:00:00' 
+GROUP BY Clients.client_id
+HAVING count(Clients.client_id) &gt; 10
+ORDER BY SUM(Payments.sum_payment) DESC
+
+
+/* актуальность beetwen от контекста строгости сравнения крайних значений (&gt; или &gt;=) */
+/* сорт и проверка крайних значений + count&gt;10&quot;&quot; платежей*/</sql><sql name="SQL 2">SELECT
+	date,
+	MAX(sum_payment),
+	client_id
+FROM Payments
+GROUP BY date
+/* какая подразумевалась в задании обработка одинаковых платежей? выбрать первый/случайный/оба? */</sql><sql name="SQL 3">SELECT 	
+	Payments.client_id,
+	Payments.payment_id,
+	Payments.date,
+	coalesce(lag(Payments.date) over (PARTITION BY Payments.client_id order by Payments.client_id), '01.01.1990') as previuous_payment_day /*как заименовать столбеч?*/
+	
+FROM Payments
+/* потенциально лишние&quot;&quot; столбцы вывел и в силу удобства чтения и в силу отстутствия описанного ограничения на четкий формат вывода, как в двух предыдущих задачах */
+/* пока не рассмотрены случаи с одинаковыми дейттаймами или вообще даже дубликатами */</sql><sql name="test">SELECT Clients.client_id, Clients.client_name, Payments.date, Payments.payment_id, Payments.sum_payment
+FROM Clients
+JOIN Payments ON Clients.client_id = Payments.client_id</sql><current_tab id="0"/></tab_sql></sqlb_project>
