@@ -31,6 +31,12 @@
 #### тинек
 просто задачи на логику. неоч адекватные для поставленного таймлимита
 
+#### vk
+работа с очередями в apache kafka. в отдельной репе <https://github.com/15yofullpartyanimegirl/vk-queue>
+
+#### Сентинел
+очередное тестовое, задачки на sql
+
 #### <template_title>
 <template_summary>
 
