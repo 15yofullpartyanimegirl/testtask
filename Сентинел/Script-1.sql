@@ -5,7 +5,8 @@ CALL public.fill_bucket();
 
 -- 2
 CALL fill_flag('ADDR_FACT_FLG', 'POST_FACT');
--- call, call
+CALL fill_flag('ADDR_WORK_FLG', 'POST_WORK');
+CALL fill_flag('ADDR_REG_FLG', 'POST_REG');
 
 -- 3
 -- "идентификаторы заемщика, договора, стартовый долг amount"
